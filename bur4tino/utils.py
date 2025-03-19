@@ -3,6 +3,11 @@ import json
 import random
 from pathlib import Path
 
+from datetime import datetime
+
+def get_date() -> str:
+    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
 def get_data_dir():
     """Возвращает путь к директории хранения данных."""
     data_dir = Path.home() / ".bur4tino"
@@ -29,7 +34,7 @@ def generate_random_password(length=12):
 
 
 def generate_json_auth():
-    """Берёт первую строку из email'ов и ключей, создаёт JSON и удаляет их из файла."""
+    """Берёт первую строку из email'ов и ключей, создаёт объект и удаляет их из файла."""
     data_dir = get_data_dir()
     email = read_first_line(data_dir / "emails.md", "нет имейла")
     key = read_first_line(data_dir / "keys.md", "нет ключа")
@@ -37,11 +42,15 @@ def generate_json_auth():
     result = {
         "email": email,
         "key": key,
-        "password": generate_random_password()
+        "password": generate_random_password(),
+        "date": get_date()
     }
 
-    return json.dumps(result, indent=4, ensure_ascii=False)
+    return result  # Возвращаем объект (словарь), а не строку
+
+
 
 if __name__ == "__main__":
-    print(generate_json_auth())
+    auth = generate_json_auth()
+    print(auth)
 
